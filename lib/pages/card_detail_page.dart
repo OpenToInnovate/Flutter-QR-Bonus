@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/scan_result.dart';
+import '../models/store.dart';
 import '../services/share_service.dart';
 
 /// Detailed view of a loyalty card with barcode and actions
@@ -21,8 +22,8 @@ class _CardDetailPageState extends State<CardDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final brand = _extractBrandName(widget.result.content);
-    final cardColor = _getCardColor(brand);
+    final store = StoreData.getStoreByName(widget.result.content) ?? 
+                  StoreData.getStoreById('nectar')!; // Default to Nectar
     final barcodeData = _generateBarcodeData(widget.result.content);
 
     return Scaffold(
@@ -32,7 +33,7 @@ class _CardDetailPageState extends State<CardDetailPage> {
         foregroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          brand,
+          store.name,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -69,7 +70,7 @@ class _CardDetailPageState extends State<CardDetailPage> {
                 width: double.infinity,
                 height: 280,
                 decoration: BoxDecoration(
-                  color: cardColor,
+                  color: store.colorValue,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
@@ -85,7 +86,7 @@ class _CardDetailPageState extends State<CardDetailPage> {
                     Positioned(
                       top: 20,
                       left: 20,
-                      child: _buildBrandLogo(brand),
+                      child: _buildBrandLogo(store),
                     ),
                     
                     // Barcode section
@@ -112,9 +113,9 @@ class _CardDetailPageState extends State<CardDetailPage> {
     );
   }
 
-  /// Build brand logo based on brand name
-  Widget _buildBrandLogo(String brand) {
-    switch (brand.toLowerCase()) {
+  /// Build brand logo based on store
+  Widget _buildBrandLogo(Store store) {
+    switch (store.id) {
       case 'nectar':
         return _buildNectarLogo();
       case 'tesco':
@@ -123,7 +124,7 @@ class _CardDetailPageState extends State<CardDetailPage> {
       case 'sainsburys':
         return _buildSainsburysLogo();
       default:
-        return _buildGenericLogo(brand);
+        return _buildGenericLogo(store.name);
     }
   }
 
@@ -341,68 +342,6 @@ class _CardDetailPageState extends State<CardDetailPage> {
     );
   }
 
-  /// Extract brand name from content
-  String _extractBrandName(String content) {
-    if (content.toLowerCase().contains('nectar')) return 'nectar';
-    if (content.toLowerCase().contains('starbucks')) return 'Starbucks';
-    if (content.toLowerCase().contains('mcdonalds')) return 'McDonald\'s';
-    if (content.toLowerCase().contains('subway')) return 'Subway';
-    if (content.toLowerCase().contains('costa')) return 'Costa';
-    if (content.toLowerCase().contains('pret')) return 'Pret';
-    if (content.toLowerCase().contains('tesco')) return 'Tesco';
-    if (content.toLowerCase().contains('sainsbury')) return 'Sainsbury\'s';
-    if (content.toLowerCase().contains('asda')) return 'ASDA';
-    if (content.toLowerCase().contains('morrisons')) return 'Morrisons';
-    
-    // If it's a URL, try to extract domain
-    if (content.startsWith('http')) {
-      try {
-        final uri = Uri.parse(content);
-        final host = uri.host.toLowerCase();
-        if (host.contains('.')) {
-          return host.split('.').first;
-        }
-        return host;
-      } catch (e) {
-        // Fall through to default
-      }
-    }
-    
-    // Default to first word or truncated content
-    final words = content.split(' ');
-    if (words.isNotEmpty && words.first.length > 1) {
-      return words.first.length > 10 
-          ? '${words.first.substring(0, 10)}...'
-          : words.first;
-    }
-    
-    return content.length > 10 ? '${content.substring(0, 10)}...' : content;
-  }
-
-  /// Get card color based on brand
-  Color _getCardColor(String brand) {
-    switch (brand.toLowerCase()) {
-      case 'nectar':
-        return const Color(0xFF6B46C1); // Purple
-      case 'tesco':
-        return const Color(0xFF1E40AF); // Blue
-      case 'sainsbury\'s':
-      case 'sainsburys':
-        return const Color(0xFF059669); // Green
-      case 'starbucks':
-        return const Color(0xFF036635); // Dark green
-      case 'mcdonalds':
-        return const Color(0xFFDC2626); // Red
-      case 'subway':
-        return const Color(0xFF059669); // Green
-      case 'costa':
-        return const Color(0xFF7C2D12); // Brown
-      case 'pret':
-        return const Color(0xFF7C3AED); // Violet
-      default:
-        return const Color(0xFF6B46C1); // Default purple
-    }
-  }
 
   /// Generate barcode data from content
   Map<String, String> _generateBarcodeData(String content) {

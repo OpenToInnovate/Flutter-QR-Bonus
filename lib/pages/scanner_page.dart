@@ -4,10 +4,13 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../constants/app_constants.dart';
+import '../models/store.dart';
 
 /// The QR code scanner page with camera preview and scan window
 class ScannerPage extends StatefulWidget {
-  const ScannerPage({super.key});
+  final Store? selectedStore;
+  
+  const ScannerPage({super.key, this.selectedStore});
 
   @override
   State<ScannerPage> createState() => _ScannerPageState();

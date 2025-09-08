@@ -9,7 +9,7 @@ import '../models/store.dart';
 /// The QR code scanner page with camera preview and scan window
 class ScannerPage extends StatefulWidget {
   final Store? selectedStore;
-  
+
   const ScannerPage({super.key, this.selectedStore});
 
   @override
@@ -43,7 +43,6 @@ class _ScannerPageState extends State<ScannerPage> {
     _controller.dispose();
     super.dispose();
   }
-
 
   /// Handle QR code detection
   Future<void> _handleDetection(BarcodeCapture capture) async {
@@ -98,7 +97,7 @@ class _ScannerPageState extends State<ScannerPage> {
         builder: (context, constraints) {
           final size = constraints.biggest;
           final center = Offset(size.width / 2, size.height / 2);
-          
+
           // Calculate scan rectangle dimensions
           final scanWidth = size.width * 0.8;
           final scanHeight = size.height * 0.4;
@@ -124,7 +123,7 @@ class _ScannerPageState extends State<ScannerPage> {
                 child: Column(
                   children: [
                     const Spacer(flex: 2),
-                    
+
                     // Phone icon with scanning animation
                     Container(
                       width: 80,
@@ -132,7 +131,9 @@ class _ScannerPageState extends State<ScannerPage> {
                       decoration: BoxDecoration(
                         color: const Color(0xFF4A4A4A),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
+                        border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.3),
+                            width: 1),
                       ),
                       child: Stack(
                         children: [
@@ -159,7 +160,8 @@ class _ScannerPageState extends State<ScannerPage> {
                               decoration: BoxDecoration(
                                 color: const Color(0xFF2D2D2D),
                                 shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 1),
+                                border:
+                                    Border.all(color: Colors.white, width: 1),
                               ),
                               child: const Center(
                                 child: Icon(
@@ -177,19 +179,22 @@ class _ScannerPageState extends State<ScannerPage> {
                             right: 15,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: List.generate(8, (index) => Container(
-                                width: 2,
-                                height: 20,
-                                color: Colors.white.withValues(alpha: 0.7),
-                              )),
+                              children: List.generate(
+                                  8,
+                                  (index) => Container(
+                                        width: 2,
+                                        height: 20,
+                                        color:
+                                            Colors.white.withValues(alpha: 0.7),
+                                      )),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 40),
-                    
+
                     // Scan rectangle outline
                     Container(
                       width: scanWidth,
@@ -207,9 +212,9 @@ class _ScannerPageState extends State<ScannerPage> {
                         ),
                       ),
                     ),
-                    
+
                     const Spacer(flex: 2),
-                    
+
                     // Action buttons
                     Column(
                       children: [
@@ -238,7 +243,7 @@ class _ScannerPageState extends State<ScannerPage> {
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 40),
                   ],
                 ),
@@ -263,7 +268,7 @@ class _ScannerPageState extends State<ScannerPage> {
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-      
+
       if (image != null) {
         // Here you would typically process the image to extract QR/barcode data
         // For now, we'll just show a placeholder message
@@ -338,7 +343,8 @@ class _ManualEntryDialogState extends State<ManualEntryDialog> {
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: _controller.text.trim().isNotEmpty ? _saveEntry : null,
+                  onPressed:
+                      _controller.text.trim().isNotEmpty ? _saveEntry : null,
                   child: const Text(
                     'Save',
                     style: TextStyle(
@@ -350,9 +356,9 @@ class _ManualEntryDialogState extends State<ManualEntryDialog> {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 20),
-            
+
             // Brand banner (TESCO style)
             Container(
               width: double.infinity,
@@ -373,9 +379,9 @@ class _ManualEntryDialogState extends State<ManualEntryDialog> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Card number input
             const Align(
               alignment: Alignment.centerLeft,
@@ -388,9 +394,9 @@ class _ManualEntryDialogState extends State<ManualEntryDialog> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 8),
-            
+
             // Text input field
             TextField(
               controller: _controller,
@@ -398,7 +404,8 @@ class _ManualEntryDialogState extends State<ManualEntryDialog> {
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Enter your card number',
-                hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+                hintStyle:
+                    TextStyle(color: Colors.white.withValues(alpha: 0.6)),
                 filled: true,
                 fillColor: const Color(0xFF2D2D2D),
                 border: OutlineInputBorder(
@@ -414,14 +421,15 @@ class _ManualEntryDialogState extends State<ManualEntryDialog> {
                 setState(() {}); // Rebuild to update save button state
               },
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Save button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _controller.text.trim().isNotEmpty ? _saveEntry : null,
+                onPressed:
+                    _controller.text.trim().isNotEmpty ? _saveEntry : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF6B35),
                   foregroundColor: Colors.white,

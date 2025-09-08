@@ -73,7 +73,6 @@ class _HomePageState extends State<HomePage> {
     await _shareService.shareText(text);
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (!_initialized) {
@@ -128,7 +127,8 @@ class _HomePageState extends State<HomePage> {
                   GestureDetector(
                     onTap: () async {
                       final result = await Navigator.of(context).push<String>(
-                        MaterialPageRoute(builder: (_) => const StoreListPage()),
+                        MaterialPageRoute(
+                            builder: (_) => const StoreListPage()),
                       );
                       if (!mounted) return;
                       if (result != null && result.isNotEmpty) {
@@ -138,7 +138,8 @@ class _HomePageState extends State<HomePage> {
                         if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text(AppConstants.scannedAndCopiedMessage),
+                              content:
+                                  Text(AppConstants.scannedAndCopiedMessage),
                               duration: AppConstants.snackBarDuration,
                               backgroundColor: Color(0xFF2D2D2D),
                             ),
@@ -163,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            
+
             // Cards grid
             Expanded(
               child: _historyService.isEmpty
@@ -180,7 +181,8 @@ class _HomePageState extends State<HomePage> {
                   : Padding(
                       padding: const EdgeInsets.all(16),
                       child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
@@ -190,15 +192,17 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (context, index) {
                           final result = _historyService.history[index];
                           // Get store from content or use default
-                          final store = StoreData.getStoreByName(result.content) ?? 
-                                        StoreData.getStoreById('nectar')!;
-                          
+                          final store =
+                              StoreData.getStoreByName(result.content) ??
+                                  StoreData.getStoreById('nectar')!;
+
                           return LoyaltyCard(
                             content: result.content,
                             brand: store.name,
-                            cardColor: store.colorValue,
+                            cardColor: store.color,
                             onTap: () => _openCardDetail(result),
-                            onLongPress: () => _showCardOptions(context, result, index),
+                            onLongPress: () =>
+                                _showCardOptions(context, result, index),
                           );
                         },
                       ),
@@ -209,7 +213,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
 
   /// Show options for a card
   void _showCardOptions(BuildContext context, ScanResult result, int index) {

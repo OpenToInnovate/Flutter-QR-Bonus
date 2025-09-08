@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 
-/// A loyalty card widget that displays QR code scan results as cards
+/// A loyalty card widget that displays store branding and content
 class LoyaltyCard extends StatelessWidget {
-  /// The content of the QR code
+  /// The card content (barcode number, QR data, etc.)
   final String content;
-  
-  /// The brand/name to display on the card
+
+  /// The store/brand name
   final String brand;
-  
-  /// The color of the card
-  final Color cardColor;
-  
-  /// Callback when the card is tapped
+
+  /// The card's primary color
+  final int cardColor;
+
+  /// Callback when card is tapped
   final VoidCallback? onTap;
-  
-  /// Callback when the card is long pressed
+
+  /// Callback when card is long pressed
   final VoidCallback? onLongPress;
 
   const LoyaltyCard({
     super.key,
     required this.content,
     required this.brand,
-    this.cardColor = const Color(0xFF6B46C1), // Default purple
+    required this.cardColor,
     this.onTap,
     this.onLongPress,
   });
@@ -32,62 +32,71 @@ class LoyaltyCard extends StatelessWidget {
       onTap: onTap,
       onLongPress: onLongPress,
       child: Container(
-        width: 160,
-        height: 100,
         decoration: BoxDecoration(
-          color: cardColor,
+          color: Color(cardColor),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
-        child: Stack(
+        child: Column(
           children: [
-            // Background pattern/design
-            Positioned(
-              top: 10,
-              right: 10,
+            // Store branding section
+            Expanded(
+              flex: 2,
               child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(20),
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: _buildStoreLogo(),
                 ),
               ),
             ),
-            // Brand name
-            Positioned(
-              bottom: 16,
-              left: 16,
-              child: Text(
-                brand,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            // QR code indicator
-            Positioned(
-              top: 16,
-              left: 16,
+
+            // Card info section
+            Expanded(
+              flex: 1,
               child: Container(
-                width: 24,
-                height: 24,
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(4),
+                  color: Colors.white.withValues(alpha: 0.15),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
                 ),
-                child: const Icon(
-                  Icons.qr_code,
-                  color: Colors.white,
-                  size: 16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      brand,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _formatCardNumber(content),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -95,5 +104,56 @@ class LoyaltyCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Build the store logo or brand text
+  Widget _buildStoreLogo() {
+    // For now, we'll use brand text. In a full implementation,
+    // you could add actual logo images for each brand
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(
+        _getBrandDisplayText(),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.2,
+        ),
+        textAlign: TextAlign.center,
+        maxLines: 2,
+      ),
+    );
+  }
+
+  /// Get the brand display text (handle special cases)
+  String _getBrandDisplayText() {
+    switch (brand.toLowerCase()) {
+      case 'nectar':
+        return 'nectar';
+      case 'tesco':
+        return 'TESCO';
+      case 'marks & spencer':
+        return 'M&S';
+      case 'waitrose & partners':
+        return 'WAITROSE\n& PARTNERS';
+      default:
+        return brand.toUpperCase();
+    }
+  }
+
+  /// Format card number for display (show first 4 and last 4 digits)
+  String _formatCardNumber(String number) {
+    if (number.length <= 8) return number;
+
+    // Remove non-digits for formatting
+    final digits = number.replaceAll(RegExp(r'\D'), '');
+
+    if (digits.length <= 8) return number;
+
+    final first4 = digits.substring(0, 4);
+    final last4 = digits.substring(digits.length - 4);
+
+    return '$first4....$last4';
   }
 }

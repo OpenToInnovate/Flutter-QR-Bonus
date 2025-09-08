@@ -4,22 +4,22 @@ import 'package:flutter/material.dart';
 class Store {
   /// Unique identifier for the store
   final String id;
-  
+
   /// Display name of the store
   final String name;
-  
+
   /// Primary brand color
   final int color;
-  
+
   /// Secondary color (optional)
   final int? secondaryColor;
-  
+
   /// Whether this store is in the popular list
   final bool isPopular;
-  
+
   /// Keywords for search functionality
   final List<String> keywords;
-  
+
   /// Store category
   final StoreCategory category;
 
@@ -35,9 +35,10 @@ class Store {
 
   /// Get color as Flutter Color
   Color get colorValue => Color(color);
-  
+
   /// Get secondary color as Flutter Color (if available)
-  Color? get secondaryColorValue => secondaryColor != null ? Color(secondaryColor!) : null;
+  Color? get secondaryColorValue =>
+      secondaryColor != null ? Color(secondaryColor!) : null;
 }
 
 /// Categories for organizing stores
@@ -120,7 +121,7 @@ class StoreData {
       keywords: ['waitrose', 'partners', 'mywaitrose'],
       category: StoreCategory.supermarket,
     ),
-    
+
     // All Cards
     Store(
       id: '99_ranch',
@@ -279,17 +280,17 @@ class StoreData {
   ];
 
   /// Get popular stores
-  static List<Store> get popularStores => 
+  static List<Store> get popularStores =>
       allStores.where((store) => store.isPopular).toList();
 
   /// Search stores by query
   static List<Store> searchStores(String query) {
     if (query.isEmpty) return allStores;
-    
+
     final lowercaseQuery = query.toLowerCase();
     return allStores.where((store) {
       return store.name.toLowerCase().contains(lowercaseQuery) ||
-             store.keywords.any((keyword) => keyword.contains(lowercaseQuery));
+          store.keywords.any((keyword) => keyword.contains(lowercaseQuery));
     }).toList();
   }
 
@@ -305,21 +306,21 @@ class StoreData {
   /// Get store by name (fuzzy matching)
   static Store? getStoreByName(String name) {
     final lowercaseName = name.toLowerCase();
-    
+
     // Exact match first
     for (final store in allStores) {
       if (store.name.toLowerCase() == lowercaseName) {
         return store;
       }
     }
-    
+
     // Keyword match
     for (final store in allStores) {
       if (store.keywords.any((keyword) => keyword == lowercaseName)) {
         return store;
       }
     }
-    
+
     // Partial match
     for (final store in allStores) {
       if (store.name.toLowerCase().contains(lowercaseName) ||
@@ -327,7 +328,7 @@ class StoreData {
         return store;
       }
     }
-    
+
     return null;
   }
 }

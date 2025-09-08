@@ -1,11 +1,9 @@
-import 'dart:math' as math;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../constants/app_constants.dart';
-import '../widgets/scan_window_overlay.dart' as custom;
 
 /// The QR code scanner page with camera preview and scan window
 class ScannerPage extends StatefulWidget {
@@ -43,37 +41,6 @@ class _ScannerPageState extends State<ScannerPage> {
     super.dispose();
   }
 
-  /// Toggle the camera torch/flashlight
-  Future<void> _toggleTorch() async {
-    try {
-      await _controller.toggleTorch();
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(AppConstants.torchNotAvailableMessage),
-            duration: AppConstants.snackBarDuration,
-          ),
-        );
-      }
-    }
-  }
-
-  /// Switch between front and back cameras
-  Future<void> _switchCamera() async {
-    try {
-      await _controller.switchCamera();
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(AppConstants.noSecondCameraMessage),
-            duration: AppConstants.snackBarDuration,
-          ),
-        );
-      }
-    }
-  }
 
   /// Handle QR code detection
   Future<void> _handleDetection(BarcodeCapture capture) async {
@@ -106,32 +73,37 @@ class _ScannerPageState extends State<ScannerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('Point at a QR'),
-        actions: [
-          // Torch toggle button
-          IconButton(
-            icon: const Icon(Icons.flash_on),
-            onPressed: _toggleTorch,
-            tooltip: AppConstants.toggleTorchTooltip,
+        backgroundColor: const Color(0xFF2D2D2D),
+        foregroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          'Scanner',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
           ),
-          // Camera switch button
-          IconButton(
-            icon: const Icon(Icons.cameraswitch),
-            onPressed: _switchCamera,
-            tooltip: AppConstants.switchCameraTooltip,
-          ),
-        ],
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          // Calculate scan window dimensions
           final size = constraints.biggest;
-          final side = math.min(size.width, size.height) *
-              AppConstants.scanWindowSizeRatio;
           final center = Offset(size.width / 2, size.height / 2);
-          final scanRect =
-              Rect.fromCenter(center: center, width: side, height: side);
+          
+          // Calculate scan rectangle dimensions
+          final scanWidth = size.width * 0.8;
+          final scanHeight = size.height * 0.4;
+          final scanRect = Rect.fromCenter(
+            center: center,
+            width: scanWidth,
+            height: scanHeight,
+          );
 
           return Stack(
             fit: StackFit.expand,
@@ -143,24 +115,129 @@ class _ScannerPageState extends State<ScannerPage> {
                 onDetect: _handleDetection,
               ),
 
-              // Scan window overlay
-              custom.ScanWindowOverlay(scanRect: scanRect),
-
-              // Instruction text
-              Positioned(
-                bottom: 32,
-                left: 0,
-                right: 0,
-                child: Text(
-                  kIsWeb
-                      ? AppConstants.webCameraInstruction
-                      : AppConstants.mobileCameraInstruction,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    shadows: [Shadow(blurRadius: 6)],
-                  ),
+              // Dark overlay with phone icon and scan rectangle
+              Container(
+                color: const Color(0xFF1A1A2E).withValues(alpha: 0.8),
+                child: Column(
+                  children: [
+                    const Spacer(flex: 2),
+                    
+                    // Phone icon with scanning animation
+                    Container(
+                      width: 80,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4A4A4A),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
+                      ),
+                      child: Stack(
+                        children: [
+                          // Phone notch
+                          Positioned(
+                            top: 8,
+                            left: 20,
+                            right: 20,
+                            child: Container(
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.3),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ),
+                          // Scanning circle
+                          Positioned(
+                            top: 30,
+                            left: 30,
+                            right: 30,
+                            child: Container(
+                              height: 20,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF2D2D2D),
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 1),
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.qr_code_scanner,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Barcode pattern
+                          Positioned(
+                            bottom: 20,
+                            left: 15,
+                            right: 15,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: List.generate(8, (index) => Container(
+                                width: 2,
+                                height: 20,
+                                color: Colors.white.withValues(alpha: 0.7),
+                              )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 40),
+                    
+                    // Scan rectangle outline
+                    Container(
+                      width: scanWidth,
+                      height: scanHeight,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: MobileScanner(
+                          controller: _controller,
+                          scanWindow: scanRect,
+                          onDetect: _handleDetection,
+                        ),
+                      ),
+                    ),
+                    
+                    const Spacer(flex: 2),
+                    
+                    // Action buttons
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: _showManualEntry,
+                          child: const Text(
+                            'Enter manually',
+                            style: TextStyle(
+                              color: Color(0xFFFF6B35),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        GestureDetector(
+                          onTap: _importScreenshot,
+                          child: const Text(
+                            'Import screenshot',
+                            style: TextStyle(
+                              color: Color(0xFFFF6B35),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    const SizedBox(height: 40),
+                  ],
                 ),
               ),
             ],
@@ -168,5 +245,207 @@ class _ScannerPageState extends State<ScannerPage> {
         },
       ),
     );
+  }
+
+  /// Show manual entry dialog
+  void _showManualEntry() {
+    showDialog(
+      context: context,
+      builder: (context) => const ManualEntryDialog(),
+    );
+  }
+
+  /// Import screenshot from gallery
+  Future<void> _importScreenshot() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      
+      if (image != null) {
+        // Here you would typically process the image to extract QR/barcode data
+        // For now, we'll just show a placeholder message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Screenshot import feature coming soon'),
+              backgroundColor: Color(0xFF2D2D2D),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error importing image: $e'),
+            backgroundColor: const Color(0xFF2D2D2D),
+          ),
+        );
+      }
+    }
+  }
+}
+
+/// Dialog for manual entry of QR/barcode data
+class ManualEntryDialog extends StatefulWidget {
+  const ManualEntryDialog({super.key});
+
+  @override
+  State<ManualEntryDialog> createState() => _ManualEntryDialogState();
+}
+
+class _ManualEntryDialogState extends State<ManualEntryDialog> {
+  final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-focus the text field when dialog opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.black,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: _controller.text.trim().isNotEmpty ? _saveEntry : null,
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(
+                      color: Color(0xFFFF6B35),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 20),
+            
+            // Brand banner (TESCO style)
+            Container(
+              width: double.infinity,
+              height: 80,
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E40AF), // Blue color like TESCO
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Center(
+                child: Text(
+                  'TESCO',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Card number input
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Card Number',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 8),
+            
+            // Text input field
+            TextField(
+              controller: _controller,
+              focusNode: _focusNode,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: 'Enter your card number',
+                hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+                filled: true,
+                fillColor: const Color(0xFF2D2D2D),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {}); // Rebuild to update save button state
+              },
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Save button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _controller.text.trim().isNotEmpty ? _saveEntry : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF6B35),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Save',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _saveEntry() {
+    final text = _controller.text.trim();
+    if (text.isNotEmpty) {
+      Navigator.of(context).pop<String>(text);
+    }
   }
 }

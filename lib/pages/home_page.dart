@@ -7,6 +7,7 @@ import '../services/clipboard_service.dart';
 import '../services/share_service.dart';
 import '../widgets/loyalty_card.dart';
 import 'scanner_page.dart';
+import 'card_detail_page.dart';
 
 /// The main home page of the QR scanner app
 class HomePage extends StatefulWidget {
@@ -195,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                             content: result.content,
                             brand: brand,
                             cardColor: cardColor,
-                            onTap: () => _copy(result.content),
+                            onTap: () => _openCardDetail(result),
                             onLongPress: () => _showCardOptions(context, result, index),
                           );
                         },
@@ -308,5 +309,14 @@ class _HomePageState extends State<HomePage> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  /// Open card detail page
+  void _openCardDetail(ScanResult result) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => CardDetailPage(result: result),
+      ),
+    );
   }
 }

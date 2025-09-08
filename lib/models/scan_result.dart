@@ -2,16 +2,16 @@
 class ScanResult {
   /// The scanned QR code content
   final String content;
-  
+
   /// When the scan was performed
   final DateTime timestamp;
-  
+
   /// Creates a new scan result
   const ScanResult({
     required this.content,
     required this.timestamp,
   });
-  
+
   /// Creates a scan result with current timestamp
   factory ScanResult.now(String content) {
     return ScanResult(
@@ -19,7 +19,7 @@ class ScanResult {
       timestamp: DateTime.now(),
     );
   }
-  
+
   /// Converts to JSON for storage
   Map<String, dynamic> toJson() {
     return {
@@ -27,7 +27,7 @@ class ScanResult {
       'timestamp': timestamp.millisecondsSinceEpoch,
     };
   }
-  
+
   /// Creates from JSON
   factory ScanResult.fromJson(Map<String, dynamic> json) {
     return ScanResult(
@@ -35,7 +35,7 @@ class ScanResult {
       timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp'] as int),
     );
   }
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -43,10 +43,10 @@ class ScanResult {
         other.content == content &&
         other.timestamp == timestamp;
   }
-  
+
   @override
   int get hashCode => content.hashCode ^ timestamp.hashCode;
-  
+
   @override
   String toString() {
     return 'ScanResult(content: $content, timestamp: $timestamp)';

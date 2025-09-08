@@ -19,13 +19,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   /// Service for managing scan history
   final HistoryService _historyService = HistoryService();
-  
+
   /// Service for clipboard operations
   final ClipboardService _clipboardService = ClipboardService();
-  
+
   /// Service for sharing content
   final ShareService _shareService = ShareService();
-  
+
   /// Whether the services have been initialized
   bool _initialized = false;
 
@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Latest result or instruction
               if (latest == null) ...[
                 const Text(
@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
               const SizedBox(height: 8),
-              
+
               // History section
               Expanded(
                 child: _historyService.isEmpty
@@ -174,7 +174,8 @@ class _HomePageState extends State<HomePage> {
                           Expanded(
                             child: ListView.separated(
                               itemCount: _historyService.length,
-                              separatorBuilder: (_, __) => const Divider(height: 1),
+                              separatorBuilder: (_, __) =>
+                                  const Divider(height: 1),
                               itemBuilder: (context, index) {
                                 final result = _historyService.history[index];
                                 return HistoryListTile(

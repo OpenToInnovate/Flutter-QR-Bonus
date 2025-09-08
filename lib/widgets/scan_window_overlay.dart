@@ -5,19 +5,19 @@ import '../constants/app_constants.dart';
 class ScanWindowOverlay extends StatelessWidget {
   /// The rectangle where the scan window should be
   final Rect scanRect;
-  
+
   /// The scan window border color
   final Color borderColor;
-  
+
   /// The overlay background color
   final Color overlayColor;
-  
+
   /// The border radius for the scan window
   final double borderRadius;
-  
+
   /// The border width for the scan window
   final double borderWidth;
-  
+
   const ScanWindowOverlay({
     super.key,
     required this.scanRect,
@@ -26,7 +26,7 @@ class ScanWindowOverlay extends StatelessWidget {
     this.borderRadius = AppConstants.scanWindowBorderRadius,
     this.borderWidth = AppConstants.scanWindowBorderWidth,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -68,43 +68,43 @@ class ScanWindowOverlay extends StatelessWidget {
 class _HolePainter extends CustomPainter {
   /// The rectangle to cut out
   final Rect rect;
-  
+
   /// The overlay background color
   final Color overlayColor;
-  
+
   /// The border radius for the cutout
   final double borderRadius;
-  
+
   _HolePainter({
     required this.rect,
     required this.overlayColor,
     required this.borderRadius,
   });
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     // Create background paint with opacity
     final backgroundPaint = Paint()
       ..color = overlayColor.withValues(alpha: AppConstants.overlayOpacity);
-    
+
     // Create the full overlay path
     final overlayPath = Path()..addRect(Offset.zero & size);
-    
+
     // Create the cutout path with rounded corners
     final cutoutPath = Path()
       ..addRRect(RRect.fromRectXY(rect, borderRadius, borderRadius));
-    
+
     // Combine paths to create the hole
     final resultPath = Path.combine(
       PathOperation.difference,
       overlayPath,
       cutoutPath,
     );
-    
+
     // Draw the result
     canvas.drawPath(resultPath, backgroundPaint);
   }
-  
+
   @override
   bool shouldRepaint(covariant _HolePainter oldDelegate) {
     return oldDelegate.rect != rect ||

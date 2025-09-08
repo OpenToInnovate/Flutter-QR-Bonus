@@ -5,16 +5,16 @@ import '../models/scan_result.dart';
 class ScanResultCard extends StatelessWidget {
   /// The scan result to display
   final ScanResult result;
-  
+
   /// Callback when copy button is pressed
   final VoidCallback onCopy;
-  
+
   /// Callback when share button is pressed
   final VoidCallback onShare;
-  
+
   /// Whether this is the latest result (affects styling)
   final bool isLatest;
-  
+
   const ScanResultCard({
     super.key,
     required this.result,
@@ -22,7 +22,7 @@ class ScanResultCard extends StatelessWidget {
     required this.onShare,
     this.isLatest = false,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -44,20 +44,20 @@ class ScanResultCard extends StatelessWidget {
                   Text(
                     _formatTimestamp(result.timestamp),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.grey[600],
-                    ),
+                          color: Colors.grey[600],
+                        ),
                   ),
               ],
             ),
             const SizedBox(height: 8),
-            
+
             // Content
             SelectableText(
               result.content,
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 12),
-            
+
             // Action buttons
             Row(
               children: [
@@ -79,12 +79,12 @@ class ScanResultCard extends StatelessWidget {
       ),
     );
   }
-  
-  /// Format timestamp for display
+
+  /// Format timestamp for display with abbreviated format
   String _formatTimestamp(DateTime timestamp) {
     final now = DateTime.now();
     final difference = now.difference(timestamp);
-    
+
     if (difference.inDays > 0) {
       return '${difference.inDays}d ago';
     } else if (difference.inHours > 0) {

@@ -9,14 +9,14 @@ void main() {
     late bool tapPressed;
     late bool copyPressed;
     late bool sharePressed;
-    
+
     setUp(() {
       testResult = ScanResult.now('https://example.com');
       tapPressed = false;
       copyPressed = false;
       sharePressed = false;
     });
-    
+
     Widget createWidget() {
       return MaterialApp(
         home: Scaffold(
@@ -30,83 +30,89 @@ void main() {
         ),
       );
     }
-    
-    testWidgets('should display scan result content', (WidgetTester tester) async {
+
+    testWidgets('should display scan result content',
+        (WidgetTester tester) async {
       // Act
       await tester.pumpWidget(createWidget());
-      
+
       // Assert
       expect(find.text('https://example.com'), findsOneWidget);
     });
-    
+
     testWidgets('should display history icon', (WidgetTester tester) async {
       // Act
       await tester.pumpWidget(createWidget());
-      
+
       // Assert
       expect(find.byIcon(Icons.history), findsOneWidget);
     });
-    
-    testWidgets('should display copy and share icons', (WidgetTester tester) async {
+
+    testWidgets('should display copy and share icons',
+        (WidgetTester tester) async {
       // Act
       await tester.pumpWidget(createWidget());
-      
+
       // Assert
       expect(find.byIcon(Icons.copy), findsOneWidget);
       expect(find.byIcon(Icons.share), findsOneWidget);
     });
-    
-    testWidgets('should call onTap when tile is tapped', (WidgetTester tester) async {
+
+    testWidgets('should call onTap when tile is tapped',
+        (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(createWidget());
-      
+
       // Act
       await tester.tap(find.byType(ListTile));
       await tester.pump();
-      
+
       // Assert
       expect(tapPressed, isTrue);
       expect(copyPressed, isFalse);
       expect(sharePressed, isFalse);
     });
-    
-    testWidgets('should call onCopy when copy icon is pressed', (WidgetTester tester) async {
+
+    testWidgets('should call onCopy when copy icon is pressed',
+        (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(createWidget());
-      
+
       // Act
       await tester.tap(find.byIcon(Icons.copy));
       await tester.pump();
-      
+
       // Assert
       expect(copyPressed, isTrue);
       expect(tapPressed, isFalse);
       expect(sharePressed, isFalse);
     });
-    
-    testWidgets('should call onShare when share icon is pressed', (WidgetTester tester) async {
+
+    testWidgets('should call onShare when share icon is pressed',
+        (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(createWidget());
-      
+
       // Act
       await tester.tap(find.byIcon(Icons.share));
       await tester.pump();
-      
+
       // Assert
       expect(sharePressed, isTrue);
       expect(tapPressed, isFalse);
       expect(copyPressed, isFalse);
     });
-    
+
     testWidgets('should display timestamp', (WidgetTester tester) async {
       // Act
       await tester.pumpWidget(createWidget());
-      
+
       // Assert
       expect(find.textContaining('ago'), findsOneWidget);
     });
-    
-    testWidgets('should display "Just now" for recent result', (WidgetTester tester) async {
+
+    testWidgets('should display "Just now" for recent result',
+        (WidgetTester tester) async {
       // Arrange
       final recentResult = ScanResult.now('recent content');
       await tester.pumpWidget(MaterialApp(
@@ -120,12 +126,13 @@ void main() {
           ),
         ),
       ));
-      
+
       // Assert
       expect(find.text('Just now'), findsOneWidget);
     });
-    
-    testWidgets('should display "1 minute ago" for 1 minute old result', (WidgetTester tester) async {
+
+    testWidgets('should display "1 minute ago" for 1 minute old result',
+        (WidgetTester tester) async {
       // Arrange
       final oldResult = ScanResult(
         content: 'old content',
@@ -142,12 +149,13 @@ void main() {
           ),
         ),
       ));
-      
+
       // Assert
       expect(find.text('1 minute ago'), findsOneWidget);
     });
-    
-    testWidgets('should display "2 minutes ago" for 2 minutes old result', (WidgetTester tester) async {
+
+    testWidgets('should display "2 minutes ago" for 2 minutes old result',
+        (WidgetTester tester) async {
       // Arrange
       final oldResult = ScanResult(
         content: 'old content',
@@ -164,12 +172,13 @@ void main() {
           ),
         ),
       ));
-      
+
       // Assert
       expect(find.text('2 minutes ago'), findsOneWidget);
     });
-    
-    testWidgets('should display "1 hour ago" for 1 hour old result', (WidgetTester tester) async {
+
+    testWidgets('should display "1 hour ago" for 1 hour old result',
+        (WidgetTester tester) async {
       // Arrange
       final oldResult = ScanResult(
         content: 'old content',
@@ -186,12 +195,13 @@ void main() {
           ),
         ),
       ));
-      
+
       // Assert
       expect(find.text('1 hour ago'), findsOneWidget);
     });
-    
-    testWidgets('should display "2 hours ago" for 2 hours old result', (WidgetTester tester) async {
+
+    testWidgets('should display "2 hours ago" for 2 hours old result',
+        (WidgetTester tester) async {
       // Arrange
       final oldResult = ScanResult(
         content: 'old content',
@@ -208,12 +218,13 @@ void main() {
           ),
         ),
       ));
-      
+
       // Assert
       expect(find.text('2 hours ago'), findsOneWidget);
     });
-    
-    testWidgets('should display "1 day ago" for 1 day old result', (WidgetTester tester) async {
+
+    testWidgets('should display "1 day ago" for 1 day old result',
+        (WidgetTester tester) async {
       // Arrange
       final oldResult = ScanResult(
         content: 'old content',
@@ -230,12 +241,13 @@ void main() {
           ),
         ),
       ));
-      
+
       // Assert
       expect(find.text('1 day ago'), findsOneWidget);
     });
-    
-    testWidgets('should display "2 days ago" for 2 days old result', (WidgetTester tester) async {
+
+    testWidgets('should display "2 days ago" for 2 days old result',
+        (WidgetTester tester) async {
       // Arrange
       final oldResult = ScanResult(
         content: 'old content',
@@ -252,12 +264,13 @@ void main() {
           ),
         ),
       ));
-      
+
       // Assert
       expect(find.text('2 days ago'), findsOneWidget);
     });
-    
-    testWidgets('should truncate long content with ellipsis', (WidgetTester tester) async {
+
+    testWidgets('should truncate long content with ellipsis',
+        (WidgetTester tester) async {
       // Arrange
       final longContent = 'a' * 100; // Very long content
       final longResult = ScanResult.now(longContent);
@@ -272,7 +285,7 @@ void main() {
           ),
         ),
       ));
-      
+
       // Assert
       final textWidget = tester.widget<Text>(find.byType(Text).first);
       expect(textWidget.overflow, equals(TextOverflow.ellipsis));

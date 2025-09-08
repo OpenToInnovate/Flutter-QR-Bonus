@@ -18,7 +18,7 @@ class ScannerPage extends StatefulWidget {
 class _ScannerPageState extends State<ScannerPage> {
   /// Mobile scanner controller for camera operations
   late final MobileScannerController _controller;
-  
+
   /// Flag to prevent multiple scan handling
   bool _handled = false;
 
@@ -79,13 +79,13 @@ class _ScannerPageState extends State<ScannerPage> {
   Future<void> _handleDetection(BarcodeCapture capture) async {
     // Prevent multiple handling of the same scan
     if (_handled) return;
-    
+
     final codes = capture.barcodes;
     if (codes.isEmpty) return;
-    
+
     final value = codes.first.rawValue;
     if (value == null || value.isEmpty) return;
-    
+
     _handled = true;
 
     // Provide haptic feedback
@@ -97,7 +97,7 @@ class _ScannerPageState extends State<ScannerPage> {
 
     // Small delay to ensure haptic feedback is felt
     await Future<void>.delayed(AppConstants.scanDelay);
-    
+
     if (mounted) {
       Navigator.of(context).pop<String>(value);
     }
@@ -127,9 +127,11 @@ class _ScannerPageState extends State<ScannerPage> {
         builder: (context, constraints) {
           // Calculate scan window dimensions
           final size = constraints.biggest;
-          final side = math.min(size.width, size.height) * AppConstants.scanWindowSizeRatio;
+          final side = math.min(size.width, size.height) *
+              AppConstants.scanWindowSizeRatio;
           final center = Offset(size.width / 2, size.height / 2);
-          final scanRect = Rect.fromCenter(center: center, width: side, height: side);
+          final scanRect =
+              Rect.fromCenter(center: center, width: side, height: side);
 
           return Stack(
             fit: StackFit.expand,
@@ -140,19 +142,19 @@ class _ScannerPageState extends State<ScannerPage> {
                 scanWindow: scanRect,
                 onDetect: _handleDetection,
               ),
-              
+
               // Scan window overlay
               custom.ScanWindowOverlay(scanRect: scanRect),
-              
+
               // Instruction text
               Positioned(
                 bottom: 32,
                 left: 0,
                 right: 0,
                 child: Text(
-                  kIsWeb 
-                    ? AppConstants.webCameraInstruction 
-                    : AppConstants.mobileCameraInstruction,
+                  kIsWeb
+                      ? AppConstants.webCameraInstruction
+                      : AppConstants.mobileCameraInstruction,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,

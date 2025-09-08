@@ -6,19 +6,19 @@ import '../constants/app_constants.dart';
 class HistoryListTile extends StatelessWidget {
   /// The scan result to display
   final ScanResult result;
-  
+
   /// The index of this item in the list
   final int index;
-  
+
   /// Callback when the tile is tapped
   final VoidCallback onTap;
-  
+
   /// Callback when copy button is pressed
   final VoidCallback onCopy;
-  
+
   /// Callback when share button is pressed
   final VoidCallback onShare;
-  
+
   const HistoryListTile({
     super.key,
     required this.result,
@@ -27,7 +27,7 @@ class HistoryListTile extends StatelessWidget {
     required this.onCopy,
     required this.onShare,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -41,8 +41,8 @@ class HistoryListTile extends StatelessWidget {
       subtitle: Text(
         _formatTimestamp(result.timestamp),
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Colors.grey[600],
-        ),
+              color: Colors.grey[600],
+            ),
       ),
       onTap: onTap,
       trailing: Wrap(
@@ -62,12 +62,12 @@ class HistoryListTile extends StatelessWidget {
       ),
     );
   }
-  
-  /// Format timestamp for display
+
+  /// Format timestamp for display with full word format
   String _formatTimestamp(DateTime timestamp) {
     final now = DateTime.now();
     final difference = now.difference(timestamp);
-    
+
     if (difference.inDays > 0) {
       return '${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago';
     } else if (difference.inHours > 0) {

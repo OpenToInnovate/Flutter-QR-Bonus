@@ -1,17 +1,29 @@
 # Flutter QR Bonus
 
-A clean, feature-rich Flutter QR code scanner with scan window, haptics, persistent history, and copy/share functionality. Supports iOS, Android, and Web platforms.
+A modern, feature-rich Flutter loyalty card manager with QR code scanning, store recognition, and beautiful card displays. Transform your physical loyalty cards into a sleek digital wallet with brand-specific styling and intuitive navigation.
 
 ## ✨ Features
 
-- **Fast QR Code Scanning**: Opens camera with centered scan window for precise targeting
-- **Haptic Feedback**: Medium impact vibration on successful scan
-- **Persistent History**: Automatically saves and restores scan history across app sessions
-- **Copy & Share**: One-tap copy to clipboard and native sharing functionality
-- **Camera Controls**: Torch toggle and front/back camera switching
-- **Auto-copy**: Automatically copies the first scan result to clipboard
-- **Clean UI**: Material Design 3 with modern, intuitive interface
-- **Cross-platform**: Works on iOS, Android, and Web
+### 🎯 Core Functionality
+- **Smart QR Code Scanning**: Advanced camera scanning with visual guides and haptic feedback
+- **Store Recognition**: Automatic brand detection for 30+ major retailers (Nectar, Tesco, Boots, etc.)
+- **Digital Card Display**: Beautiful card views with brand-specific colors and logos
+- **Manual Entry**: Add cards manually with brand-specific styling
+- **Screenshot Import**: Import QR codes from your photo gallery
+
+### 🎨 User Experience
+- **Dark Theme**: Sleek dark interface with consistent theming
+- **Card Grid**: Visual card grid on home screen with brand colors
+- **Store List**: Comprehensive store selection with search functionality
+- **Card Details**: Full-screen card view with barcode display and actions
+- **Smooth Navigation**: Intuitive flow between all screens
+
+### 🔧 Technical Features
+- **Persistent Storage**: Automatic save and restore of all cards
+- **Cross-Platform**: Works seamlessly on iOS, Android, and Web
+- **Auto-copy**: Automatically copies scanned results to clipboard
+- **Share Integration**: Native sharing functionality for all platforms
+- **Responsive Design**: Adapts to different screen sizes and orientations
 
 ## 🚀 Quick Start
 
@@ -70,7 +82,8 @@ lib/
 ├── constants/
 │   └── app_constants.dart          # App-wide constants and configuration
 ├── models/
-│   └── scan_result.dart            # Scan result data model
+│   ├── scan_result.dart            # Scan result data model
+│   └── store.dart                  # Store/brand data model with 30+ retailers
 ├── services/
 │   ├── history_service.dart        # Persistent history management
 │   ├── clipboard_service.dart      # Clipboard operations
@@ -78,11 +91,14 @@ lib/
 ├── widgets/
 │   ├── scan_window_overlay.dart    # Camera overlay with scan window
 │   ├── scan_result_card.dart       # Result display card
-│   └── history_list_tile.dart      # History list item
+│   ├── history_list_tile.dart      # History list item
+│   └── loyalty_card.dart           # Brand-specific loyalty card widget
 ├── pages/
-│   ├── home_page.dart              # Main home screen
-│   └── scanner_page.dart           # QR scanner screen
-└── main.dart                       # App entry point
+│   ├── home_page.dart              # Main home screen with card grid
+│   ├── scanner_page.dart           # QR scanner with manual entry
+│   ├── store_list_page.dart        # Store selection with search
+│   └── card_detail_page.dart       # Full card view with barcode
+└── main.dart                       # App entry point with dark theme
 ```
 
 ## 🧪 Testing
@@ -104,9 +120,10 @@ flutter test test/widgets/scan_result_card_test.dart
 
 ### Test Coverage
 
-- **Models**: Complete test coverage for `ScanResult` model
+- **Models**: Complete test coverage for `ScanResult` and `Store` models
 - **Services**: Full testing of `HistoryService`, `ClipboardService`, and `ShareService`
-- **Widgets**: Comprehensive widget tests for all UI components
+- **Widgets**: Comprehensive widget tests for all UI components including `LoyaltyCard`
+- **Pages**: Full page testing for `StoreListPage` and `CardDetailPage`
 - **Integration**: End-to-end testing scenarios
 
 ## 🔧 Configuration
@@ -132,45 +149,80 @@ You can easily customize:
 
 ### Core Dependencies
 
-- `mobile_scanner: ^6.0.1` - QR code scanning functionality
-- `share_plus: ^9.0.0` - Cross-platform content sharing
+- `mobile_scanner: ^7.0.1` - Advanced QR code scanning functionality
+- `share_plus: ^11.1.0` - Cross-platform content sharing
 - `shared_preferences: ^2.2.2` - Persistent data storage
+- `image_picker: ^1.0.4` - Gallery access for screenshot import
 
 ### Development Dependencies
 
 - `flutter_test` - Testing framework
-- `flutter_lints: ^4.0.0` - Code quality and style
-- `mockito: ^5.4.4` - Mocking for unit tests
-- `build_runner: ^2.4.7` - Code generation
+- `flutter_lints: ^6.0.0` - Code quality and style
+- `mockito: ^5.5.0` - Mocking for unit tests
+- `build_runner: ^2.7.0` - Code generation
 
 ## 🎯 Usage
 
-### Basic Scanning
+### Adding New Cards
 
-1. Tap the "Scan QR" button
-2. Point your camera at a QR code
-3. The app will automatically detect and copy the result
-4. View the result on the home screen
+1. **From Store List**: Tap the + button → Select store → Scan QR code
+2. **Manual Entry**: Tap + button → Select store → Tap "Enter manually"
+3. **Screenshot Import**: Tap + button → Select store → Tap "Import screenshot"
+4. **Custom Cards**: Tap + button → "Add custom card" → Scan any QR code
 
-### History Management
+### Managing Your Cards
 
-- **View History**: All previous scans are displayed in chronological order
-- **Promote to Top**: Tap any history item to move it to the top
-- **Copy/Share**: Use the action buttons for each history item
-- **Clear History**: Use the trash icon in the app bar to clear all history
+- **View Cards**: All cards displayed in a beautiful grid on the home screen
+- **Card Details**: Tap any card to view full details with barcode
+- **Card Actions**: Long press cards for copy, share, or delete options
+- **Brand Recognition**: Cards automatically display with correct brand colors and logos
 
-### Camera Controls
+### Store Selection
 
-- **Torch**: Toggle flashlight for better scanning in low light
-- **Switch Camera**: Switch between front and back cameras
-- **Scan Window**: Align QR codes within the centered square overlay
+- **Popular Stores**: Quick access to most common retailers
+- **Search**: Find any store by typing in the search bar
+- **All Stores**: Browse complete list of 30+ supported retailers
+- **Custom Cards**: Add cards for stores not in the list
+
+### Scanner Features
+
+- **Visual Guides**: Phone icon and scanning rectangle for better targeting
+- **Manual Entry**: Enter card numbers manually with brand-specific styling
+- **Screenshot Import**: Import QR codes from your photo gallery
+- **Auto-copy**: Scanned results automatically copied to clipboard
+
+## 🏪 Supported Stores
+
+The app includes built-in support for 30+ major retailers with proper branding:
+
+### Popular Stores
+- **Nectar** (Sainsbury's) - Purple with organic logo
+- **Tesco** - Blue with TESCO branding
+- **Boots** - Dark blue with italic logo
+- **Superdrug** - Dark grey with pink accents
+- **Morrisons** - Green with yellow accents
+- **Marks & Spencer** - Dark green with M&S logo
+- **Co-op** - Light blue with co op branding
+- **Waitrose & Partners** - Green with WAITROSE logo
+
+### Additional Stores
+- **Supermarkets**: ASDA, ALDI, LIDL, Iceland
+- **Restaurants**: Starbucks, McDonald's, Subway, Costa, Pret, KFC, Burger King, Pizza Hut, Domino's
+- **Retail**: Argos, Currys, John Lewis, Next, Primark, H&M, Zara, Uniqlo
+- **And many more!**
+
+### Custom Cards
+- Add cards for any store not in the list
+- Automatic brand detection from QR content
+- Fallback to Nectar styling for unknown brands
 
 ## 🔒 Privacy & Security
 
-- **Local Storage**: All scan history is stored locally on the device
+- **Local Storage**: All card data is stored locally on the device
 - **No Network**: The app doesn't send any data over the network
 - **Camera Access**: Camera is only used for scanning, not recording
-- **Permissions**: Minimal permissions required (camera only)
+- **Gallery Access**: Only used for importing QR codes from screenshots
+- **Minimal Permissions**: Only camera and gallery access required
 
 ## 🐛 Troubleshooting
 
@@ -231,6 +283,27 @@ If you encounter any issues or have questions:
 1. Check the [troubleshooting section](#-troubleshooting)
 2. Search existing [issues](../../issues)
 3. Create a new issue with detailed information
+
+---
+
+## 🚀 Recent Updates
+
+### Version 1.4.0 (Latest)
+- **Major UI/UX Overhaul**: Complete redesign of store list and card detail pages
+- **Performance Improvements**: Converted to StatelessWidget for better performance
+- **Enhanced Testing**: Added comprehensive test coverage for all new components
+- **Code Quality**: Improved error handling and null safety throughout
+
+### Version 1.3.0
+- **Store System**: Added 30+ retailers with brand recognition
+- **Card Management**: Full card detail views with barcode display
+- **Search Functionality**: Real-time search across all stores
+- **Manual Entry**: Brand-specific manual card entry
+
+### Version 1.2.0
+- **Dark Theme**: Complete dark theme implementation
+- **Card Grid**: Visual card display on home screen
+- **Scanner Redesign**: Modern scanner with visual guides
 
 ---
 

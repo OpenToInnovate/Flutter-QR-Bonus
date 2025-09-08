@@ -18,8 +18,26 @@ class QRScannerApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: AppConstants.appName,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        brightness: Brightness.dark,
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFFF6B35), // Orange
+          secondary: Color(0xFFE53E3E), // Red
+          surface: Color(0xFF2D2D2D), // Dark grey
+          onPrimary: Colors.white,
+          onSecondary: Colors.white,
+          onSurface: Colors.white,
+        ),
         useMaterial3: true,
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF2D2D2D),
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        snackBarTheme: const SnackBarThemeData(
+          backgroundColor: Color(0xFF2D2D2D),
+          contentTextStyle: TextStyle(color: Colors.white),
+        ),
       ),
       home: const HomePage(),
     );
